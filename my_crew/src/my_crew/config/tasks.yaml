@@ -1,15 +1,55 @@
-math_task:
+search_flights_task:
   description: >
-    create the steps needed to solve the math problem {problem}
+    Search for available flights from {origin} to {destination} on {date}.
+    Use the Flight Search Tool to retrieve flight options.
+    Present all results clearly, highlighting the best value option (best balance of price and duration)
+    and the fastest option. Include a short recommendation at the end.
   expected_output: >
-    A list with the steps needed to solve the math problem {problem}
-  agent: math_teacher
+    A structured list of available flights with airline, flight number, departure and arrival times,
+    duration, number of stops, and price per person.
+    End with a clear recommendation: which flight offers the best value and which is the fastest.
+  agent: flight_checker
 
-python_task:
+recommend_hotels_task:
   description: >
-    create a python script that solves the math problem {problem} using the steps created by the math teacher agent
+    Suggest the best hotels in {destination} for a traveler arriving on {date}.
+    Consider a range of budgets (budget, mid-range, luxury).
+    For each hotel provide: name, neighborhood, price range per night, star rating,
+    key amenities, and why it is a good fit for the trip.
+    Generate at least 5 hotel options across different budget tiers.
   expected_output: >
-    A python script that solves the math problem {problem}
-    without ```and ``` and at the beginning and end
-    The output should be a valid python code ready to run
-  agent: python_developer
+    A list of at least 5 hotel recommendations in {destination}, organized by budget tier
+    (budget / mid-range / luxury). Each entry includes the hotel name, neighborhood,
+    price per night, star rating, top amenities, and a short reason to choose it.
+    End with a top pick for value and a top pick for comfort.
+  agent: hotel_recommender
+
+plan_tour_task:
+  description: >
+    Create a detailed day-by-day tourism itinerary for {destination} starting from {date}.
+    Plan for a 5-day trip. Each day should include:
+    - Morning, afternoon, and evening activities
+    - Must-see landmarks and hidden gems
+    - Recommended local restaurants for lunch and dinner
+    - Estimated travel time between locations
+    - Any tickets or reservations to book in advance
+  expected_output: >
+    A 5-day itinerary for {destination} with morning, afternoon, and evening plans for each day.
+    Includes landmarks, local restaurants, travel tips between spots, and advance booking notes.
+  agent: tour_guide
+
+travel_advice_task:
+  description: >
+    Provide comprehensive travel advice for a trip from {origin} to {destination}.
+    Cover the following topics:
+    - Visa and entry requirements
+    - Best time to visit and weather during {date}
+    - Local currency and tipping customs
+    - Safety tips and areas to be aware of
+    - Cultural etiquette and local customs
+    - Must-know phrases in the local language
+    - Essential items to pack
+  expected_output: >
+    A well-structured travel advice guide covering visa requirements, weather, currency,
+    safety, cultural tips, useful phrases, and packing recommendations for the destination.
+  agent: travel_advisor

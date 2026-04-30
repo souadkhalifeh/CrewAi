@@ -1,52 +1,95 @@
-from crewai import Agent, Crew, Process, Task
+import os
+from dotenv import load_dotenv
+from crewai import Agent, Crew, LLM, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
+from my_crew.tools.flight_tool import FlightSearchTool
+
+load_dotenv()
+
+def _llm() -> LLM:
+    return LLM(
+        model=os.environ["MODEL"],
+        api_key=os.environ["GROQ_API_KEY"],
+    )
 
 @CrewBase
 class MyCrew():
-    """MyCrew crew"""
+    """Travel Assistant Crew"""
 
     agents: list[BaseAgent]
     tasks: list[Task]
 
     @agent
-    def math_teacher(self) -> Agent:
+    def flight_checker(self) -> Agent:
         return Agent(
-            config=self.agents_config['math_teacher'], 
-            verbose=True, 
+            config=self.agents_config['flight_checker'],
+            llm=_llm(),
+            verbose=True,
+            allow_delegation=False,
+            tools=[FlightSearchTool()],
+        )
+
+    @agent
+    def hotel_recommender(self) -> Agent:
+        return Agent(
+            config=self.agents_config['hotel_recommender'],
+            llm=_llm(),
+            verbose=True,
             allow_delegation=False,
         )
 
     @agent
-    def python_developer(self) -> Agent:
+    def tour_guide(self) -> Agent:
         return Agent(
-            config=self.agents_config['python_developer'], 
-            verbose=True, 
-            allow_code_execution=True, 
+            config=self.agents_config['tour_guide'],
+            llm=_llm(),
+            verbose=True,
+            allow_delegation=False,
         )
-        
-    @task
-    def math_task(self) -> Task:
-        return Task(
-            config=self.tasks_config['math_task'],
-            output_file= 'math_task.md'
+
+    @agent
+    def travel_advisor(self) -> Agent:
+        return Agent(
+            config=self.agents_config['travel_advisor'],
+            llm=_llm(),
+            verbose=True,
+            allow_delegation=False,
         )
 
     @task
-    def python_task(self) -> Task:
+    def search_flights_task(self) -> Task:
         return Task(
-            config=self.tasks_config['python_task'], # type: ignore[index]
-            output_file='python_code.md'
+            config=self.tasks_config['search_flights_task'],
+            output_file='search_flights_task.md'
+        )
+
+    @task
+    def recommend_hotels_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['recommend_hotels_task'],
+            output_file='hotels_result.md'
+        )
+
+    @task
+    def plan_tour_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['plan_tour_task'],
+            output_file='tour_itinerary.md'
+        )
+
+    @task
+    def travel_advice_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['travel_advice_task'],
+            output_file='travel_advice.md'
         )
 
     @crew
     def crew(self) -> Crew:
-        """Creates the MyCrew crew"""
-
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
-            tasks=self.tasks, # Automatically created by the @task decorator
+            agents=self.agents,
+            tasks=self.tasks,
             process=Process.sequential,
             verbose=True,
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )
