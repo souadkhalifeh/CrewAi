@@ -1,0 +1,31 @@
+lesson_plan_task:
+  description: >
+    Create a detailed lesson plan for teaching {subject} to {age_group} students.
+    The lesson plan should include:
+    - Learning objectives
+    - Materials needed
+    - Step-by-step instructions for the lesson
+    - Assessment methods to evaluate student understanding
+  expected_output: >
+    A detailed lesson plan for teaching {subject} to {age_group} students
+  agent: lesson_planner
+
+quiz_generator_task:
+  description: >
+    Create comprehensive quizzes to assess student understanding of {subject} concepts.
+  expected_output: >
+    A set of quizzes with questions and answers for each concept.
+    Formatted as markdown without '```'
+  agent: quiz_generator
+
+advisor_task:
+  description: >
+    Review the lesson plan created by the Lesson Planner and provide practical teaching
+    suggestions for delivering it to {age_group} students studying {subject}.
+    Include tips on pacing, engagement strategies, common misconceptions to address,
+    recommended tools or activities, and how to differentiate for different skill levels.
+  expected_output: >
+    A list of actionable teaching suggestions covering pacing, engagement, common pitfalls,
+    recommended activities or tools, and differentiation strategies.
+    Formatted as markdown without '```'
+  agent: advisor
