@@ -1,54 +1,99 @@
-# MyCrew Crew
+# Travel Assistant Crew
 
-Welcome to the MyCrew Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+A multi-agent AI travel assistant built with [CrewAI](https://www.crewai.com/), powered by **Groq (llama-3.3-70b-versatile)**. Given a departure city, destination, and travel date, the crew automatically searches for flights, recommends hotels, builds a 5-day itinerary, and provides practical travel advice.
 
-## Installation
+---
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+## Agents
 
-First, if you haven't already, install uv:
+| Agent | Role | Output |
+|---|---|---|
+| **Flight Checker** | Searches available flights between origin and destination | `search_flights_task.md` |
+| **Hotel Recommender** | Suggests hotels across budget, mid-range, and luxury tiers | `hotels_result.md` |
+| **Tour Guide** | Builds a day-by-day 5-day tourism itinerary | `tour_itinerary.md` |
+| **Travel Advisor** | Provides visa, safety, currency, and cultural advice | `travel_advice.md` |
 
-```bash
-pip install uv
+Agents run **sequentially** — each one hands its output to the next.
+
+---
+
+## Project Structure
+
+```
+my_crew/
+├── src/my_crew/
+│   ├── config/
+│   │   ├── agents.yaml          # Agent roles, goals, and backstories
+│   │   └── tasks.yaml           # Task descriptions and expected outputs
+│   ├── tools/
+│   │   └── flight_tool.py       # Dummy flight search tool (random data)
+│   ├── crew.py                  # Crew wiring: agents, tasks, LLM config
+│   └── main.py                  # Entry point
+├── .env                         # API keys and model config
+└── pyproject.toml
 ```
 
-Next, navigate to your project directory and install the dependencies:
+---
 
-(Optional) Lock the dependencies and install them by using the CLI command:
-```bash
-crewai install
-```
-### Customizing
+## Setup
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
-
-- Modify `src/my_crew/config/agents.yaml` to define your agents
-- Modify `src/my_crew/config/tasks.yaml` to define your tasks
-- Modify `src/my_crew/crew.py` to add your own logic, tools and specific args
-- Modify `src/my_crew/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
-
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
+**1. Clone and install dependencies**
 
 ```bash
-$ crewai run
+cd my_crew
+pip install -e .
 ```
 
-This command initializes the my-crew Crew, assembling the agents and assigning them tasks as defined in your configuration.
+**2. Configure your `.env`**
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+```env
+MODEL=groq/llama-3.3-70b-versatile
+GROQ_API_KEY=your_groq_api_key_here
+```
 
-## Understanding Your Crew
+Get a free Groq API key at [console.groq.com](https://console.groq.com).
 
-The my-crew Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+**3. Set your travel inputs in `main.py`**
 
-## Support
+```python
+inputs = {
+    'origin': 'Paris',
+    'destination': 'Tokyo',
+    'date': '2026-06-15',
+}
+```
 
-For support, questions, or feedback regarding the MyCrew Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+---
 
-Let's create wonders together with the power and simplicity of crewAI.
+## Run
+
+```bash
+python -c "from my_crew.main import run; run()"
+```
+
+Or using the CrewAI CLI:
+
+```bash
+crewai run
+```
+
+---
+
+## Output Files
+
+After the crew finishes, four markdown files are generated in the project root:
+
+| File | Contents |
+|---|---|
+| `search_flights_task.md` | Available flights with prices, times, and a best-value recommendation |
+| `hotels_result.md` | Hotel options by budget tier with amenities and top picks |
+| `tour_itinerary.md` | 5-day itinerary with morning/afternoon/evening plans and restaurant tips |
+| `travel_advice.md` | Visa info, weather, currency, safety tips, cultural etiquette, packing list |
+
+---
+
+## Tech Stack
+
+- [CrewAI](https://www.crewai.com/) `1.14.3`
+- [Groq](https://console.groq.com) — `llama-3.3-70b-versatile`
+- Python `>=3.10`
